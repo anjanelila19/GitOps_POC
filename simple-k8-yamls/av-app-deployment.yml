@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: av-app
+spec:
+  selector:
+    matchLabels:
+      app: av-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: av-app
+    spec:
+      containers:
+        - name: av-app
+          image: acr.io/av-app-image:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+kind: Service
+apiVersion: v1
+metadata:
+  name: av-app-service
+spec:
+  selector:
+    app: av-app
+  ports:
+    - protocol: TCP
+      port: 90
+      targetPort: 80
+  type: NodePort
