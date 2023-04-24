@@ -1,32 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: av-app
+  creationTimestamp: null
+  labels:
+    app: flaskdemo
+  name: flaskdemo
 spec:
+  replicas: 3
   selector:
     matchLabels:
-      app: av-app
-  replicas: 1
+      app: flaskdemo
+  strategy: {}
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        app: av-app
+        app: flaskdemo
     spec:
       containers:
-        - name: av-app
-          image: acr.io/av-app-image:v1
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 80
-kind: Service
+      - image: 933082532808.dkr.ecr.eu-central-1.amazonaws.com/apps_images:latest
+        name: flaskdemo
+        resources: {}
+status: {}
+---
 apiVersion: v1
+kind: Service
 metadata:
-  name: av-app-service
+  name: lb-service
+  labels:
+    app: lb-service
 spec:
-  selector:
-    app: av-app
+  type: LoadBalancer
   ports:
-    - protocol: TCP
-      port: 90
-      targetPort: 80
-  type: NodePort
+  - port: 80
+    targetPort: 80
+  selector:
+    app: flaskdemo
